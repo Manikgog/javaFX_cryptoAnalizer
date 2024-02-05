@@ -17,10 +17,12 @@ import static ru.java.fx.javafx_cryptoanalizer_project.entity.Constants.alphabet
 public class BruteForce implements Action{
     private final ReaderFile readerFile;
     private final WriterFile writerFile;
+    private final Decoder decoder;
 
     public BruteForce(){
         this.readerFile = new ReaderFileImpl();
         this.writerFile = new WriterFileImpl();
+        this.decoder = new Decoder();
     }
     public Result execute(String[] parameters){
         String encodedFile = parameters[0];
@@ -30,7 +32,7 @@ public class BruteForce implements Action{
         List<String> encodedList = readerFile.readFile(encodedFile);
         List<String> decodedList = new ArrayList<>();
         for (int i = 0; i < encodedList.size(); i++) {
-            decodedList.add(decode(encodedList.get(i), shift));
+            decodedList.add(decoder.decode(encodedList.get(i), shift));
         }
         writerFile.writeFile(parameters[1], decodedList);
         return new Result("текст раскодирован в файле " + decodedFile);
@@ -44,7 +46,7 @@ public class BruteForce implements Action{
         for (shift = 0; shift < alphabet.length(); shift++) {
             count = 0;
             for (String encodedStr : srcWords) {
-                String s = decode(encodedStr, shift);
+                String s = decoder.decode(encodedStr, shift);
                 if(exampleWords.contains(s)){
                     count++;
                 }
@@ -88,39 +90,5 @@ public class BruteForce implements Action{
         }
 
         return list;
-    }
-
-    public String decode(String str, int shift) {
-        StringBuilder newStr = new StringBuilder();
-
-        for (int i = 0; i < str.length(); i++) {
-            String lowCase = str.toLowerCase();
-            int indexOf = alphabet.indexOf(lowCase.charAt(i));
-            // убираем лишний сдвиг, если он больше длины алфавита
-            if (Math.abs(shift) > alphabet.length()) {
-                shift %= alphabet.length();
-            }
-            if (indexOf != -1) {    // если символ есть в алфавите, то он шифруется
-                indexOf += shift;
-                if (indexOf >= alphabet.length()) {
-                    indexOf %= alphabet.length();
-                }else if(indexOf < 0){
-                    if(Math.abs(indexOf) > alphabet.length()){
-                        indexOf %= alphabet.length();
-                    }
-                    indexOf = alphabet.length() + indexOf;
-                }
-                if (str.charAt(i) >= 'A' && str.charAt(i) <= 'Z' ||
-                        str.charAt(i) >= 'А' && str.charAt(i) <= 'Я') {
-                    String upCaseStr = alphabet.toUpperCase();
-                    newStr.append(upCaseStr.charAt(indexOf));
-                } else {
-                    newStr.append(alphabet.charAt(indexOf));
-                }
-            }else {                 // если символа нет в авфавите, то он не шифруется
-                newStr.append(str.charAt(i));
-            }
-        }
-        return newStr.toString();
     }
 }
