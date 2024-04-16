@@ -34,8 +34,8 @@ public class Encoder implements Action {
         List<String> list = readerFile.readFile(sourceFile);
         List<String> encodedList = new ArrayList<>();
         int shift = Integer.valueOf(parameters[2]);
-        for (int i = 0; i < list.size(); i++) {
-            encodedList.add(encode(list.get(i), shift));
+        for (String s : list) {
+            encodedList.add(encode(s, shift));
         }
         writerFile.writeFile(encodedFile, encodedList);
         return new Result("текст закодирован в файле " + encodedFile);
@@ -54,9 +54,6 @@ public class Encoder implements Action {
                 if (indexOf >= alphabet.length()) {
                     indexOf %= alphabet.length();
                 } else if (indexOf < 0) {
-                    if (Math.abs(indexOf) > alphabet.length()) {
-                        indexOf %= alphabet.length();
-                    }
                     indexOf = alphabet.length() + indexOf;
                 }
                 if (str.charAt(i) >= 'A' && str.charAt(i) <= 'Z' ||

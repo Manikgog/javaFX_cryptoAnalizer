@@ -2,13 +2,12 @@ package ru.java.fx.javafx_cryptoanalizer_project.controller;
 
 import ru.java.fx.javafx_cryptoanalizer_project.action.Action;
 import ru.java.fx.javafx_cryptoanalizer_project.action.BruteForce;
-import ru.java.fx.javafx_cryptoanalizer_project.action.Decoder;
 import ru.java.fx.javafx_cryptoanalizer_project.action.Encoder;
 import ru.java.fx.javafx_cryptoanalizer_project.exceptions.ArgumentsListException;
 
 public enum Actions {
     ENCODE(new Encoder()),
-    DECODE(new Decoder()),
+    DECODE(new Encoder()),
     BRUTEFORCE(new BruteForce());
 
     private final Action action;

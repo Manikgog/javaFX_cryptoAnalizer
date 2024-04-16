@@ -17,12 +17,12 @@ import static ru.java.fx.javafx_cryptoanalizer_project.entity.Constants.alphabet
 public class BruteForce implements Action{
     private final ReaderFile readerFile;
     private final WriterFile writerFile;
-    private final Decoder decoder;
+    private final Encoder decoder;
 
     public BruteForce(){
         this.readerFile = new ReaderFileImpl();
         this.writerFile = new WriterFileImpl();
-        this.decoder = new Decoder();
+        this.decoder = new Encoder();
     }
     public Result execute(String[] parameters){
         String encodedFile = parameters[0];
@@ -31,8 +31,8 @@ public class BruteForce implements Action{
         int shift = bruteForce(encodedFile, exampleFile);
         List<String> encodedList = readerFile.readFile(encodedFile);
         List<String> decodedList = new ArrayList<>();
-        for (int i = 0; i < encodedList.size(); i++) {
-            decodedList.add(decoder.decode(encodedList.get(i), shift));
+        for (String s : encodedList) {
+            decodedList.add(decoder.encode(s, shift));
         }
         writerFile.writeFile(parameters[1], decodedList);
         return new Result("текст раскодирован в файле " + decodedFile);
@@ -46,7 +46,7 @@ public class BruteForce implements Action{
         for (shift = 0; shift < alphabet.length(); shift++) {
             count = 0;
             for (String encodedStr : srcWords) {
-                String s = decoder.decode(encodedStr, shift);
+                String s = decoder.encode(encodedStr, shift);
                 if(exampleWords.contains(s)){
                     count++;
                 }
